@@ -65,7 +65,8 @@ plot <- harvest7w|>
 
 plot
 
-ggsave(plot, "../output/tb_plot.png")
+ggsave(filename = "tb_plot.png",
+       path = "../output")
 
 ```
 
