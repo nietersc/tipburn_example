@@ -1,0 +1,35 @@
+---
+title: "Tipburn Example"
+author: "Chris Nieters"
+date: Sys.Date()
+editor_options:
+  chunk_output_type: console
+format:
+  html:
+    code-fold: false
+    embed-resources: true
+    toc: true
+    number-sections: false
+    theme: cerulean
+---
+# load packages
+```{r}
+
+library(tidyverse)
+library(car)
+library(broom) # for model residuals extraction
+library(emmeans) # for model mean extraction
+library(multcomp)
+library(readxl)
+library(lubridate)
+library(hms)
+
+```
+# import data
+```{r}
+
+
+
+
+```
+
