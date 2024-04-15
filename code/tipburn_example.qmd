@@ -28,7 +28,33 @@ library(hms)
 # import data
 ```{r}
 
+harvest7w <- read_csv("../data/harvest7w.csv")
 
+```
+
+#EDA
+```{r}
+
+plot <- harvest7w|>
+  ggplot(aes(x = NSMS, y = Pct_TB,
+             color = NSMS))+
+  geom_boxplot()+
+  facet_wrap(~PPFD)
+
+
+ggsave(plot, "../output/tb_plot.png")
+
+```
+
+# mod
+```{r}
+
+
+mod <- lm(Pct_TB ~ Rack + NSMS*PPFD,
+          data = harvest7w)
+
+
+car::Anova(mod, type = 3)
 
 
 ```
