@@ -20,20 +20,42 @@ library(car)
 library(broom) # for model residuals extraction
 library(emmeans) # for model mean extraction
 library(multcomp)
-library(readxl)
-library(lubridate)
-library(hms)
 
 ```
-# import data
+# import and wrangle data
 ```{r}
 
-harvest7w <- read_csv("../data/harvest7w.csv")
+harvest7 <- read_csv("../data/harvest7w.csv",
+                      show_col_types = F)
+
+harvest7w <- harvest7 |>
+  mutate_at(vars(1:3), as.factor)
 
 ```
+
+#summary stats
+```{r}
+
+summary <- harvest7w|>
+  summarise(
+    mean_tb = mean(Pct_TB),
+    median_tb = median(Pct_TB),
+    n_tb = length(Pct_TB),
+    zeros_tb = sum(Pct_TB == 0),
+    pct_zero_tb = 100* zeros_tb / n_tb,
+  )
+
+```
+
 
 #EDA
 ```{r}
+
+#density plot
+harvest7w |>
+  ggplot(aes(x = Pct_TB))+
+  geom_density(fill = "green",
+               alpha = 0.5)
 
 plot <- harvest7w|>
   ggplot(aes(x = NSMS, y = Pct_TB,
@@ -41,6 +63,7 @@ plot <- harvest7w|>
   geom_boxplot()+
   facet_wrap(~PPFD)
 
+plot
 
 ggsave(plot, "../output/tb_plot.png")
 
@@ -49,12 +72,40 @@ ggsave(plot, "../output/tb_plot.png")
 # mod
 ```{r}
 
-
 mod <- lm(Pct_TB ~ Rack + NSMS*PPFD,
           data = harvest7w)
 
-
 car::Anova(mod, type = 3)
+
+```
+
+# mod assumptions
+```{r}
+
+
+aug <- broom::augment(mod)|>
+    mutate(
+    stud_resid = rstudent(mod)
+  )
+
+
+  
+ggplot(aug, aes(x = .fitted, y = stud_resid))+
+  geom_hline(yintercept = 0, color="red")+
+  geom_point(shape = 21,
+             fill = "purple", 
+             size = 3,
+             alpha = .7)+
+  geom_smooth()+
+  geom_hline(yintercept = c(-3,3), color = "red")+
+  theme_bw()
+
+
+aug |>
+  ggplot(aes(sample = stud_resid))+
+  stat_qq()+
+  stat_qq_line()
+
 
 
 ```
