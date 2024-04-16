@@ -73,6 +73,8 @@ ggsave(filename = "tb_plot.png",
 # mod
 ```{r}
 
+options(contrasts = c("contr.sum", "contr.poly"))
+
 mod <- lm(Pct_TB ~ Rack + NSMS*PPFD,
           data = harvest7w)
 
